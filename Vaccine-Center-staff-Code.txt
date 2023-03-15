@@ -1,0 +1,486 @@
+-- create tables:
+
+create table CITY(
+   CITYNAME varchar2(30),
+   STATENAME varchar2(30),
+   COUNTRYNAME varchar2(30),
+   NUMVC number(6), -- number of vaccine center
+   POPULATION number(10)
+);
+
+create table VACCCINE_CENTER(
+   VCID number(6),
+   VCNAME varchar2(30),
+   VCPHONENUM number(10), 
+   NUMEMP number(10), -- number of Employee
+   NUMMS number(10) -- number of midical stuff
+);
+
+create table VACCCINE_CENTER_LOCATION(
+   VCID number(6),
+   CITYNAME varchar2(30),
+   STREET varchar2(30),
+   STATE varchar2(30)
+);
+
+--------
+
+create table EMPLOYEE(
+   EMPID number(6),
+   EMPNAME varchar2(30),
+   EMPPHONENUM number(10)
+);
+
+create table EMPLOYEE_WORK(
+   EMPID number(6),
+   VCID number(6),
+   EMPSHIFT date,
+   EMPTYPE varchar2(30) 
+);
+
+create table EMPLOYEE_SALARY(
+   EMPID number(6),
+   WORKHOURS number(3), 
+   SALARY number(5)
+);
+
+create table EMPLOYEE_TYPE(
+   EMPID number(6),
+   WORKHOURS number(3), 
+   EMPTYPE varchar2(30) 
+);
+
+--employee types (Suptype):
+create table DATAENTRY( 
+   EMPID number(6),
+   OFFICENO number(3)
+);
+
+create table GUIDANCE( 
+   EMPID number(6),
+   INTERNALOREXTERNAL varchar2(30), -- internal/external
+   RESPONSAREA varchar2(30) -- respons_area
+);
+
+create table RECEPTIONS( 
+   EMPID number(6),
+   LINENO number(3)
+);
+
+--------
+create table MEDICALSTAFF(
+   MSID number(6),
+   MSNAME varchar2(30),
+   MSPHONENUM number(10)
+);
+
+create table MEDICALSTAFF_WORK(
+   MSID number(6),
+   VCID number(6),
+   MSSHIFT date,
+   MSTYPE varchar2(30) 
+);
+
+create table MEDICALSTAFF_SALARY(
+   MSID number(6),
+   MSWORKHOURS number(3), 
+   SALARY number(5)
+);
+
+create table MEDICALSTAFF_TYPE(
+   MSID number(6),
+   MSWORKHOURS number(3), 
+   MSTYPE varchar2(30) 
+);
+
+-- medical staff types (Suptype):
+
+create table DOCTOR(
+   MSID number(6),
+   MSWORKHOURS number(3)
+);
+
+create table VOLUNTEER(
+   MSID number(6),
+   MSUPERVISORID number(6), -- medical supervisor ID
+   VOLHOURE number(3) -- volunteer_hours
+);
+
+create table NURSE(
+   MSID number(6),
+   MSUPERVISORID number(6), -- medical supervisor ID
+   MSWORKHOURS number(3)
+);
+
+-- primary keys: 
+alter table CITY
+add constraint CITYPK primary key (CITYNAME);
+
+alter table VACCCINE_CENTER
+add constraint VCPK primary key (VCID);
+
+alter table EMPLOYEE
+add constraint EMPPK primary key (EMPID);
+
+alter table EMPLOYEE_SALARY
+add constraint WORKHOURSPK primary key (WORKHOURS);
+
+alter table EMPLOYEE_TYPE
+add constraint EMPTYPEPK primary key (EMPTYPE);
+
+alter table MEDICALSTAFF
+add constraint MSPK primary key (MSID);
+
+alter table MEDICALSTAFF_SALARY
+add constraint MSWORKHOURSPK primary key (MSWORKHOURS);
+
+alter table MEDICALSTAFF_TYPE
+add constraint MSTYPEPK primary key (MSTYPE);
+
+-- foreign keys: 
+alter table VACCCINE_CENTER_LOCATION 
+add constraint VCIDLFK foreign key (VCID) references VACCCINE_CENTER(VCID);
+
+alter table VACCCINE_CENTER_LOCATION
+add constraint CITYNAMEPK foreign key (CITYNAME) references CITY(CITYNAME);
+
+alter table EMPLOYEE_WORK
+add constraint EMPIDWFK foreign key (EMPID) references EMPLOYEE(EMPID);
+
+alter table EMPLOYEE_WORK
+add constraint VCIDEFK foreign key (VCID) references VACCCINE_CENTER(VCID);
+
+alter table EMPLOYEE_WORK
+add constraint EMPTYPEFK foreign key (EMPTYPE) references EMPLOYEE_TYPE(EMPTYPE);
+
+alter table EMPLOYEE_SALARY
+add constraint EMPIDSFK foreign key (EMPID) references EMPLOYEE(EMPID);
+
+alter table EMPLOYEE_TYPE
+add constraint WORKHOURSFK foreign key (WORKHOURS) references EMPLOYEE_SALARY(WORKHOURS);
+
+alter table EMPLOYEE_TYPE
+add constraint EMPIDTFK foreign key (EMPID) references EMPLOYEE(EMPID);
+
+alter table DATAENTRY
+add constraint EMPIDDFK foreign key (EMPID) references EMPLOYEE(EMPID);
+
+alter table GUIDANCE
+add constraint EMPIDGFK foreign key (EMPID) references EMPLOYEE(EMPID);
+
+alter table RECEPTIONS
+add constraint EMPIDRFK foreign key (EMPID) references EMPLOYEE(EMPID);
+
+alter table MEDICALSTAFF_WORK
+add constraint MSIDWFK foreign key (MSID) references MEDICALSTAFF(MSID);
+
+alter table MEDICALSTAFF_WORK
+add constraint VCIDMSFK foreign key (VCID) references VACCCINE_CENTER(VCID);
+
+alter table MEDICALSTAFF_WORK
+add constraint MSTYPEFK foreign key (MSTYPE) references MEDICALSTAFF_TYPE(MSTYPE);
+
+alter table MEDICALSTAFF_SALARY
+add constraint MSIDSFK foreign key (MSID) references MEDICALSTAFF(MSID);
+
+alter table MEDICALSTAFF_TYPE
+add constraint MSIDTFK foreign key (MSID) references MEDICALSTAFF(MSID);
+
+alter table MEDICALSTAFF_TYPE
+add constraint MSWORKHOURSFK foreign key (MSWORKHOURS) references MEDICALSTAFF_SALARY(MSWORKHOURS);
+
+alter table DOCTOR
+add constraint MSIDDFK foreign key (MSID) references MEDICALSTAFF(MSID);
+
+alter table VOLUNTEER
+add constraint MSIDVFK foreign key (MSID) references MEDICALSTAFF(MSID);
+
+alter table NURSE
+add constraint MSIDNFK foreign key (MSID) references MEDICALSTAFF(MSID);
+
+-- not null: 
+alter table CITY 
+modify NUMVC number(6) not null;
+
+alter table CITY 
+modify STATENAME varchar2(30) not null;
+
+alter table CITY 
+modify COUNTRYNAME varchar2(30) not null;
+
+alter table VACCCINE_CENTER 
+modify VCNAME varchar2(30) not null;
+
+alter table VACCCINE_CENTER 
+modify NUMEMP number(10) not null;
+
+alter table VACCCINE_CENTER 
+modify NUMMS number(10) not null;
+
+alter table VACCCINE_CENTER_LOCATION 
+modify STREET varchar2(30) not null;
+
+alter table VACCCINE_CENTER_LOCATION 
+modify STATE varchar2(30) not null;
+
+alter table EMPLOYEE 
+modify EMPNAME varchar2(30) not null;
+
+alter table EMPLOYEE 
+modify EMPPHONENUM number(10) not null;
+
+alter table EMPLOYEE_WORK
+modify EMPTYPE varchar2(30) not null;
+
+alter table EMPLOYEE_WORK
+modify EMPSHIFT date not null;
+
+alter table EMPLOYEE_SALARY
+modify SALARY number(5) not null;
+
+alter table DATAENTRY
+modify OFFICENO number(3) not null;
+
+alter table GUIDANCE
+modify INTERNALOREXTERNAL varchar2(30) not null;
+
+alter table GUIDANCE
+modify RESPONSAREA varchar2(30) not null;
+
+alter table RECEPTIONS
+modify LINENO number(3) not null;
+
+alter table MEDICALSTAFF
+modify MSNAME varchar2(30) not null;
+
+alter table MEDICALSTAFF
+modify MSPHONENUM number(10) not null;
+
+alter table MEDICALSTAFF_WORK
+modify MSTYPE varchar2(30) not null;
+
+alter table MEDICALSTAFF_WORK
+modify MSSHIFT date not null;
+
+alter table MEDICALSTAFF_SALARY
+modify SALARY number(5) not null;
+
+alter table DOCTOR
+modify MSWORKHOURS number(3) not null;
+
+alter table NURSE
+modify MSWORKHOURS number(3) not null;
+
+alter table NURSE
+modify MSUPERVISORID number(6) not null;
+
+alter table VOLUNTEER
+modify VOLHOURE number(3) not null;
+
+alter table VOLUNTEER
+modify MSUPERVISORID number(6) not null;
+
+
+-- inserting data in tables
+
+INSERT INTO CITY VALUES ('Makkah', 'Makkah', 'Saudi Arabia', 18, 1597000);
+INSERT INTO CITY VALUES ('Jeddah', 'Makkah', 'Saudi Arabia', 39, 3976000);
+INSERT INTO CITY VALUES ('Taif', 'Makkah', 'Saudi Arabia', 37, 175000);
+INSERT INTO CITY VALUES ('Riyadh', 'Riyadh', 'Saudi Arabia', 129, 7677000);
+INSERT INTO CITY VALUES ('Jazan', 'Jazan', 'Saudi Arabia', 26, 105193);
+
+INSERT INTO VACCCINE_CENTER VALUES (960, 'alzaher Health Center', 0125433077, 620, 220); 
+INSERT INTO VACCCINE_CENTER VALUES (965, 'kuday Health Center', 0125341375, 405, 178);
+INSERT INTO VACCCINE_CENTER VALUES (970, 'Abdoulmajed Health Center', 0126208207, 550 ,331);
+INSERT INTO VACCCINE_CENTER VALUES (975, 'Obhur Health Center', 0126562619, 493, 210);
+INSERT INTO VACCCINE_CENTER VALUES (980, 'King Faisal Hospital', 0127447222, 13020, 1051);
+
+INSERT INTO VACCCINE_CENTER_LOCATION VALUES (960, 'Makkah', 'alzaher st', 'Makkah'); 
+INSERT INTO VACCCINE_CENTER_LOCATION VALUES (965, 'Makkah', 'Kuday st', 'Makkah');
+INSERT INTO VACCCINE_CENTER_LOCATION VALUES (970, 'Jeddah', 'Prince Abdulmajeed st', 'Makkah');
+INSERT INTO VACCCINE_CENTER_LOCATION VALUES (975, 'Jeddah', 'Prince Abdullah AlFiasal st', 'Makkah');
+INSERT INTO VACCCINE_CENTER_LOCATION VALUES (980, 'Taif', 'Prince Majed Ibn Abd AlAziz st', 'Makkah'); 
+
+INSERT INTO EMPLOYEE VALUES (960333, 'tariq', 0505550577);
+INSERT INTO EMPLOYEE VALUES (960344, 'sami', 0565674822);
+INSERT INTO EMPLOYEE VALUES (975888, 'tala', 0544428491);
+INSERT INTO EMPLOYEE VALUES (980654, 'ahmed', 0522939841);
+INSERT INTO EMPLOYEE VALUES (980731, 'lara', 0550555467);
+INSERT INTO EMPLOYEE VALUES (975668, 'sara', 0555505775);
+
+ALTER TABLE EMPLOYEE_WORK MODIFY EMPSHIFT varchar2(30);
+
+
+INSERT INTO EMPLOYEE_SALARY VALUES (960333, 10, 8000);
+INSERT INTO EMPLOYEE_SALARY VALUES (960344, 11, 3000);
+INSERT INTO EMPLOYEE_SALARY VALUES (975888, 8, 4000);
+INSERT INTO EMPLOYEE_SALARY VALUES (975668, 7, 7500);
+INSERT INTO EMPLOYEE_SALARY VALUES (980654, 9, 2000);
+INSERT INTO EMPLOYEE_SALARY VALUES (980731, 6, 5500);
+
+INSERT INTO EMPLOYEE_TYPE VALUES (960333, 10, 'data entry');
+INSERT INTO EMPLOYEE_TYPE VALUES (960344, 11, 'guidance');
+INSERT INTO EMPLOYEE_TYPE VALUES (975888, 8, 'receptions');
+INSERT INTO EMPLOYEE_TYPE VALUES (975668, 7, 'data entry ');
+INSERT INTO EMPLOYEE_TYPE VALUES (980654, 9, 'guidance ');
+INSERT INTO EMPLOYEE_TYPE VALUES (980731, 6, 'receptions ');
+
+INSERT INTO EMPLOYEE_WORK VALUES (960333, 960, 'Evening', 'data entry');
+INSERT INTO EMPLOYEE_WORK VALUES (960344, 960, 'morning', 'guidance');
+INSERT INTO EMPLOYEE_WORK VALUES (975888, 975, 'Evening', 'receptions');
+INSERT INTO EMPLOYEE_WORK VALUES (975668, 975, 'morning', 'data entry');
+INSERT INTO EMPLOYEE_WORK VALUES (980654, 980, 'Evening', 'guidance');
+INSERT INTO EMPLOYEE_WORK VALUES (980731, 980, 'morning', 'receptions');
+
+
+INSERT INTO DATAENTRY VALUES (960333, 15);
+INSERT INTO DATAENTRY VALUES (975668, 33);
+
+INSERT INTO GUIDANCE VALUES (960344, 'INTERNAL', 'first floor');
+INSERT INTO GUIDANCE VALUES (980654, 'EXTERNAL', 'second floor');
+
+INSERT INTO RECEPTIONS VALUES (975888, 4);
+INSERT INTO RECEPTIONS VALUES (980731, 1);
+
+INSERT INTO MEDICALSTAFF VALUES (965420, 'rania', 0565647231);
+INSERT INTO MEDICALSTAFF VALUES (965477, 'roaa', 0544487231);
+INSERT INTO MEDICALSTAFF VALUES (970430, 'mahdi', 0582333142);
+INSERT INTO MEDICALSTAFF VALUES (970490, 'manal', 0588832218);
+INSERT INTO MEDICALSTAFF VALUES (980866, 'qasim', 0566634217);
+INSERT INTO MEDICALSTAFF VALUES (980832, 'asmaa', 0508882221);
+INSERT INTO MEDICALSTAFF VALUES (980531, 'dana', 0589764321);
+
+ALTER TABLE MEDICALSTAFF_WORK MODIFY MSSHIFT varchar2(30);
+
+INSERT INTO MEDICALSTAFF_SALARY VALUES (965420, 11, 15000);
+INSERT INTO MEDICALSTAFF_SALARY VALUES (965477, 4, 1000);
+INSERT INTO MEDICALSTAFF_SALARY VALUES (970430, 10, 13000);
+INSERT INTO MEDICALSTAFF_SALARY VALUES (970490, 9, 10000);
+INSERT INTO MEDICALSTAFF_SALARY VALUES (980866, 12, 16000);
+INSERT INTO MEDICALSTAFF_SALARY VALUES (980832, 8, 11000);
+INSERT INTO MEDICALSTAFF_SALARY VALUES (980531, 2, 500);
+
+INSERT INTO MEDICALSTAFF_TYPE VALUES (965420, 11, 'doctor');
+INSERT INTO MEDICALSTAFF_TYPE VALUES (965477, 4, 'volunteer');
+INSERT INTO MEDICALSTAFF_TYPE VALUES (970430, 10, 'doctor  ');
+INSERT INTO MEDICALSTAFF_TYPE VALUES (970490, 9, 'nurse');
+INSERT INTO MEDICALSTAFF_TYPE VALUES (980866, 12, 'doctor   ');
+INSERT INTO MEDICALSTAFF_TYPE VALUES (980832, 8, 'nurse ');
+INSERT INTO MEDICALSTAFF_TYPE VALUES (980531, 2, 'volunteer ');
+
+INSERT INTO MEDICALSTAFF_WORK VALUES (965420, 965, 'morning', 'doctor');
+INSERT INTO MEDICALSTAFF_WORK VALUES (965477, 965, 'Evening', 'volunteer');
+INSERT INTO MEDICALSTAFF_WORK VALUES (970430, 970, 'morning', 'doctor');
+INSERT INTO MEDICALSTAFF_WORK VALUES (970490, 970, 'Evening', 'nurse');
+INSERT INTO MEDICALSTAFF_WORK VALUES (980866, 980, 'morning', 'doctor');
+INSERT INTO MEDICALSTAFF_WORK VALUES (980832, 980, 'Evening', 'nurse');
+INSERT INTO MEDICALSTAFF_WORK VALUES (980531, 980, 'Evening', 'volunteer');
+
+INSERT INTO DOCTOR VALUES (965420, 11);
+INSERT INTO DOCTOR VALUES (970430, 10);
+INSERT INTO DOCTOR VALUES (980866, 11);
+
+INSERT INTO VOLUNTEER VALUES (965477, 965420, 4);
+INSERT INTO VOLUNTEER VALUES (980531, 980832, 2);
+
+INSERT INTO NURSE VALUES (970490, 970430, 10);
+INSERT INTO NURSE VALUES (980832, 980866, 11);
+
+--print data tabel
+
+SELECT * FROM CITY;
+SELECT * FROM VACCCINE_CENTER;
+SELECT * FROM VACCCINE_CENTER_LOCATION;
+
+SELECT * FROM EMPLOYEE;
+SELECT * FROM EMPLOYEE_WORK;
+SELECT * FROM EMPLOYEE_SALARY;
+SELECT * FROM EMPLOYEE_TYPE;
+SELECT * FROM DATAENTRY;
+SELECT * FROM GUIDANCE;
+SELECT * FROM RECEPTIONS;
+
+SELECT * FROM MEDICALSTAFF;
+SELECT * FROM MEDICALSTAFF_WORK;
+SELECT * FROM MEDICALSTAFF_SALARY;
+SELECT * FROM MEDICALSTAFF_TYPE;
+SELECT * FROM DOCTOR;
+SELECT * FROM VOLUNTEER;
+SELECT * FROM NURSE;
+
+--queries 
+
+SELECT NUMVC, CITYNAME 
+FROM CITY 
+WHERE POPULATION BETWEEN 1000000 AND 8000000;
+
+SELECT VCNAME, VCPHONENUM, NUMMS
+FROM VACCCINE_CENTER
+ORDER BY NUMMS ASC;
+
+SELECT CITYNAME, STREET 
+FROM VACCCINE_CENTER_LOCATION
+ORDER BY CITYNAME;
+
+SELECT COUNT(EMPID), EMPTYPE
+FROM EMPLOYEE_WORK
+GROUP BY EMPTYPE;
+
+SELECT AVG(SALARY)
+FROM EMPLOYEE_SALARY;
+
+SELECT MSID
+FROM MEDICALSTAFF_SALARY
+WHERE SALARY IN(10000,11000, 13000);
+
+SELECT EMPLOYEE_WORK.EMPID, EMPLOYEE_WORK.EMPTYPE, EMPLOYEE_SALARY.SALARY
+FROM EMPLOYEE_WORK
+INNER JOIN EMPLOYEE_SALARY
+ON EMPLOYEE_WORK.EMPID = EMPLOYEE_SALARY.EMPID;
+
+-- Stored procedure
+
+create or replace procedure MSSHIFT_update (MEDICALSTAFFID  in MEDICALSTAFF_WORK.MSID%type,
+                                           MSSHIFT_update in MEDICALSTAFF_WORK.MSSHIFT%type)as
+
+begin
+update MEDICALSTAFF_WORK set MEDICALSTAFF_WORK.MSSHIFT = MSSHIFT_update
+WHERE MSID = MEDICALSTAFFID ;
+COMMIT;
+DBMS_OUTPUT.PUT_LINE('MEDICAL STAFF ID '||MEDICALSTAFFID);
+DBMS_OUTPUT.PUT_LINE('the SHIFT TIME has changed.new SHIFT TIME is '|| MSSHIFT_update);
+
+END MSSHIFT_update;
+/
+
+-- ex:
+-- SELECT *FROM MEDICALSTAFF_WORK;
+-- EXECUTE MSSHIFT_update (965420, 'Evening');
+
+-----
+
+CREATE OR REPLACE PROCEDURE MedicalStuff_information(MS_id MEDICALSTAFF.MSID%TYPE) AS 
+ 
+CURSOR CURSOR_MedicalStuff IS 
+SELECT MEDICALSTAFF.MSID,MEDICALSTAFF.MSNAME,MEDICALSTAFF.MSPHONENUM,MEDICALSTAFF_WORK.VCID,MEDICALSTAFF_WORK.MSSHIFT
+,MEDICALSTAFF_SALARY.MSWORKHOURS,MEDICALSTAFF_SALARY.SALARY,MEDICALSTAFF_TYPE.MSTYPE
+
+FROM MEDICALSTAFF,MEDICALSTAFF_WORK,MEDICALSTAFF_SALARY,MEDICALSTAFF_TYPE
+WHERE MEDICALSTAFF.MSID=MEDICALSTAFF_WORK.MSID and MEDICALSTAFF.MSID=MEDICALSTAFF_SALARY.MSID and
+      MEDICALSTAFF.MSID=MEDICALSTAFF_TYPE.MSID and MS_id=MEDICALSTAFF.MSID ;
+BEGIN 
+FOR RESULTING IN CURSOR_MedicalStuff LOOP 
+DBMS_OUTPUT.PUT_LINE('Medical Stuff ID: '||RESULTING.MSID );
+DBMS_OUTPUT.PUT_LINE('Medical Stuff Name: '|| RESULTING.MSNAME);
+DBMS_OUTPUT.PUT_LINE('Medical Stuff work name: '||RESULTING.MSTYPE);
+DBMS_OUTPUT.PUT_LINE('Medical Stuff phone number: '||RESULTING.MSPHONENUM);
+DBMS_OUTPUT.PUT_LINE('Place work ID: '||RESULTING.VCID);
+DBMS_OUTPUT.PUT_LINE('Medical Stuff shift time: '||RESULTING.MSSHIFT);
+DBMS_OUTPUT.PUT_LINE('Medical Stuff work hours: '||RESULTING.MSWORKHOURS);
+DBMS_OUTPUT.PUT_LINE('Medical Stuff salary: '||RESULTING.SALARY);
+                     
+END LOOP; 
+END MedicalStuff_information;
+
+-- ex:
+-- EXEC MedicalStuff_information(965420);
